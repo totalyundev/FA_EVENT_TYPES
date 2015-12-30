@@ -1,0 +1,32 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "wojtekpoltorak@gmail.com",
+    "longName": "FA_EVENT_TYPES",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/HEHE_BENIZ.png",
+                "name": "HEHE",
+                "targetPlatforms": null,
+                "type": "pbi"
+            },
+            {
+                "file": "images/save_small_2.png",
+                "name": "SAVE_ICON",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "FA_EVENT_TYPES",
+    "uuid": "6f0ff5ec-0bcc-439f-95cf-be4c19506ab6",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
