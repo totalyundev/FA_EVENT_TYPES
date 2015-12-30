@@ -9,6 +9,30 @@
     "resources": {
         "media": [
             {
+                "file": "images/tick_black.png",
+                "name": "TICK_BLACK",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/tick_white.png",
+                "name": "TICK_WHITE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/save33X31XXXXXXXXXX.png",
+                "name": "SAVE_IT",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/save33X31.png",
+                "name": "SSIJ_PSU",
+                "targetPlatforms": null,
+                "type": "png-trans"
+            },
+            {
                 "file": "images/HEHE_BENIZ.png",
                 "name": "HEHE",
                 "targetPlatforms": null,
