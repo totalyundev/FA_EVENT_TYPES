@@ -7,19 +7,20 @@ static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static TextLayer *s_list_message_layer, *s_question_layer;
 static Layer *primitives_layer;
+
 static int highlight_element=2;
 
 static char* s_title[] = {
-	"Bad as fuck",
-	"Quite wrong",
-	"might be",
-	"that's nice",
-	"AWESOMO"
+	"Zdecydowanie nie",
+	"Raczej nie",
+	"Ani tak, ani nie",
+	"Raczej tak",
+	"Zdecydowanie tak"
 		
 };
 
 static void update_text(int index) {
-	static char s_puff[16];
+	static char s_puff[24];
 		snprintf(s_puff, sizeof(s_puff), s_title[index]);
 	text_layer_set_text(s_list_message_layer, s_puff);
 	
@@ -87,7 +88,14 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-
+	const GEdgeInsets message_insets = {.top = 140};
+  
+	s_list_message_layer = text_layer_create(GRect(5,140,160,50));
+  text_layer_set_text_alignment(s_list_message_layer, GTextAlignmentLeft);
+ update_text(2);
+//	text_layer_set_text(s_list_message_layer, "1 2 3 4 5 6 7 8 9 10");
+  layer_add_child(window_layer, text_layer_get_layer(s_list_message_layer));
+	
   s_menu_layer = menu_layer_create(GRect(125, 2, 40, LIST_MESSAGE_WINDOW_MENU_HEIGHT));
  // menu_layer_set_click_config_onto_window(s_menu_layer, window);
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks) {
@@ -99,18 +107,12 @@ static void window_load(Window *window) {
  	layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
 
 	//question layer
-	s_question_layer = text_layer_create(GRect(3,20,122,130));
+	s_question_layer = text_layer_create(GRect(5,5,122,130));
 	text_layer_set_text_alignment(s_question_layer, GTextAlignmentLeft);
 	text_layer_set_text(s_question_layer, "This is place for question");
   layer_add_child(window_layer, text_layer_get_layer(s_question_layer));
 	
-  const GEdgeInsets message_insets = {.top = 140};
-  s_list_message_layer = text_layer_create(grect_inset(bounds, message_insets));
-  text_layer_set_text_alignment(s_list_message_layer, GTextAlignmentCenter);
- update_text(2);
-	// text_layer_set_text(s_list_message_layer, "TOP KEK");
-  layer_add_child(window_layer, text_layer_get_layer(s_list_message_layer));
-	
+  
 	primitives_layer = layer_create(bounds);
 	layer_add_child(window_layer, primitives_layer);
 	layer_set_update_proc(primitives_layer, canvas_update_proc);
