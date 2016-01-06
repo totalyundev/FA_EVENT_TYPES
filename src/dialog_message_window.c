@@ -1,6 +1,3 @@
-/**
- * Example implementation of the dialog message UI pattern.
- */
 #include <pebble.h>
 
 #include "dialog_message_window.h"

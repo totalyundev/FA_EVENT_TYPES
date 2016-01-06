@@ -9,6 +9,12 @@
     "resources": {
         "media": [
             {
+                "file": "images/12x12_shade.png",
+                "name": "SHADE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/tick_black.png",
                 "name": "TICK_BLACK",
                 "targetPlatforms": null,
