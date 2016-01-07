@@ -5,6 +5,7 @@
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static Layer *primitives_layer;
+static TextLayer *subtitle_layer;
 
 static GBitmap *s_tick_black_bitmap, *s_tick_white_bitmap, *s_shade_bitmap;
 static bool s_selections[CHECKBOX_WINDOW_NUM_ROWS];
@@ -17,19 +18,42 @@ static char* titles[]={"1",
 											 "3",
 											 "4",
 											 "Żaden z pow"};
+static char event_title[5][32];
+
 static char* subtitles[] = {
 	"first one",
 	"second",
 	"third",
 	"fourth",
-	"Żaden z powyższych"
-		
+	"Żaden z powyższych",
+	"Submit"
 };
+static void load_title(int index) {
+	snprintf(event_title[0],sizeof(event_title[0]), "Event type 1");
+	snprintf(event_title[1],sizeof(event_title[1]), "Event type 2");
+	snprintf(event_title[2],sizeof(event_title[2]), "Event type 3");
+	snprintf(event_title[3],sizeof(event_title[3]), "Event type 4");	
+	snprintf(event_title[3],sizeof(event_title[3]), "Event type 4");	
+APP_LOG(APP_LOG_LEVEL_INFO, "load title:%d",index);
+text_layer_set_text(subtitle_layer, event_title[index]);
+		//text_layer_set_text(subtitle_layer, "chujdupa");
+  APP_LOG(APP_LOG_LEVEL_INFO, "title loaded");
+	
+}
+
 static void canvas_update_proc(Layer *this_layer, GContext *ctx) {
     
     graphics_draw_rect(ctx, GRect(1, 1, 142, 38));
 }
 
+static void change_callback(MenuLayer *menu_layer, MenuIndex new_index, MenuIndex old_index, void *context ) {
+	 APP_LOG(APP_LOG_LEVEL_INFO, "Selected: %d", new_index.row);
+	// static char sub_buff[32];
+	// snprintf(sub_buff, sizeof(sub_buff), subtitles[new_index.row] );
+//	APP_LOG(APP_LOG_LEVEL_INFO, "Selected: %s", sub_buff);
+	//text_layer_set_text(subtitle_layer, subtitles[new_index.row]);
+	load_title(new_index.row);
+}
 
 static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
     return CHECKBOX_WINDOW_NUM_ROWS + 1;
@@ -48,26 +72,9 @@ static void draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex 
         static char s_buff[16];
 			//świeci na czerwono, ale działa
         snprintf(s_buff, sizeof(s_buff), titles[(int)cell_index->row] );
+			// APP_LOG(APP_LOG_LEVEL_INFO, "Menu element: %d", cell_index->row);
         menu_cell_basic_draw(ctx, cell_layer, s_buff, NULL, NULL);
-       	/*
-			switch (cell_index->row) {
-		case 0:
-		menu_cell_basic_draw(ctx, cell_layer, "Wybor 1", NULL, NULL);
-		return;
-		case 1:
-		menu_cell_basic_draw(ctx, cell_layer, "Wybor 2", NULL, NULL);
-		return;
-		case 2:
-		menu_cell_basic_draw(ctx, cell_layer, "Wybor 3", NULL, NULL);
-		return;
-		case 3:
-		menu_cell_basic_draw(ctx, cell_layer, "Wybor 4", NULL, NULL);
-		return;
-		case 4:
-		menu_cell_basic_draw(ctx, cell_layer, "Żaden z pow", NULL, NULL);
-		return;
-		}
-    */ 
+ 
 			// Selected?
         GBitmap *ptr = s_tick_black_bitmap;
         if(menu_cell_layer_is_highlighted(cell_layer)) {
@@ -162,13 +169,22 @@ static void window_load(Window *window) {
         .draw_row = draw_row_callback,
         .get_cell_height = get_cell_height_callback,
         .select_click = select_callback,
+				.selection_changed = change_callback,
     });
-    
+menu_layer_set_selected_index(s_menu_layer, MenuIndex(0,2), MenuRowAlignNone, true);
+	//txt layer
+		subtitle_layer=text_layer_create(GRect(0, 0, 144, 38));
+		text_layer_set_text(subtitle_layer, "third");
+	text_layer_set_text_alignment(subtitle_layer, GTextAlignmentLeft);
+		text_layer_set_font(subtitle_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+	layer_add_child(window_layer, (Layer*)subtitle_layer);
+	
     layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
     primitives_layer = layer_create(bounds);
     layer_set_update_proc(primitives_layer, canvas_update_proc);
     layer_add_child(window_layer, primitives_layer);
     
+	
 }
 
 static void window_unload(Window *window) {
