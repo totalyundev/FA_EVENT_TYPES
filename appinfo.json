@@ -9,6 +9,18 @@
     "resources": {
         "media": [
             {
+                "file": "images/action_icon_YES (copy).png",
+                "name": "TICK_ICON",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/cross.png",
+                "name": "CROSS",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/12x12_shade.png",
                 "name": "SHADE",
                 "targetPlatforms": null,

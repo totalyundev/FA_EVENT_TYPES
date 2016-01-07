@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "Lickert_scale_window.h"
 #include "dialog_message_window.h"
-
+#include "main.h"
 
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
@@ -32,7 +32,8 @@ static void canvas_update_proc(Layer *this_layer, GContext *ctx) {
 	graphics_draw_line(ctx, GPoint(125,0), GPoint(125,128));
 }
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-			dialog_message_window_push();
+	   scenario(0,'q');		
+	//dialog_message_window_push();
 	return;
 }
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {

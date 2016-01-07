@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "checkbox_window.h"
 #include "dialog_message_window.h"
-
+#include "main.h"
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static Layer *primitives_layer;
@@ -108,7 +108,8 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
         for(int i = 0; i < CHECKBOX_WINDOW_NUM_ROWS; i++) {
             APP_LOG(APP_LOG_LEVEL_INFO, "Option %d was %s", i, (s_selections[i] ? "selected" : "not selected"));
         }
-        dialog_message_window_push();
+      scenario(0,'q');
+			//  dialog_message_window_push();
         // window_stack_pop(true);
         } 
 		else {

@@ -3,14 +3,89 @@
 #include "Lickert_scale_window.h"
 #include "dialog_message_window.h"
 #include "checkbox_window.h"
+#include "main.h"
+#include "yes_no_window.h"
 
 #define MENU_CELL_HEIGHT 28
 
 #define NUM_WINDOWS 6
+bool first_chain = false;
+int8_t first_chain_counter = 0;
 
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static GBitmap *save_icon;
+//this is the func to handle all of the paths
+void scenario(int index, char choice) {
+
+	if(first_chain){
+		switch(first_chain_counter){
+						
+            case 1:
+            radio_button_window_push();
+						first_chain_counter++;
+            break;
+            case 2:
+            checkbox_window_push();
+      			first_chain_counter++;      
+						break;
+            case 3:
+            likert_scale_window_push();
+      			first_chain_counter++;      
+						break;
+            case 4:
+						dialog_message_window_push();
+						break;
+           
+			
+		}
+		        
+		
+		
+	} 
+	else {
+		switch (choice) {
+        //main menu
+        case 'a':
+        switch (index) {
+            case 0:
+            dialog_message_window_push();
+            break;
+            case 1:
+            radio_button_window_push();
+            break;
+            case 2:
+            checkbox_window_push();
+            break;
+            case 3:
+            likert_scale_window_push();
+            break;
+            case 4:
+						show_yes_no_window();
+						break;
+            case 5:
+            first_chain = true;
+											first_chain_counter++;
+
+						show_yes_no_window();
+            break;        
+        }
+			break;
+			case'q':
+			default:
+			 dialog_message_window_push();
+			break;
+        return;
+    }
+  
+		
+	}
+	  
+    
+    
+    
+}
+
 static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
   return NUM_WINDOWS;
 }
@@ -33,7 +108,7 @@ static void draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex 
       menu_cell_basic_draw(ctx, cell_layer, "Yes/No", NULL, NULL);
       break;
     case 5:
-      menu_cell_basic_draw(ctx, cell_layer, "Something???", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Chain example", NULL, NULL);
       break;
    
     default:
@@ -51,8 +126,10 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
 
 
 static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
+	static char a = 'a';
   switch(cell_index->row) {
-    case 0:
+   /*
+		case 0:
  dialog_message_window_push();
       break;
     case 1:
@@ -70,8 +147,9 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
     case 5:
 		//
       break;
- 
+ */
     default:
+		scenario(cell_index->row, a);
       break;
   }
 }

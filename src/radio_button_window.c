@@ -1,7 +1,5 @@
-/**
- * Example implementation of the radio button list UI pattern.
- */
 
+#include "main.h"
 #include "radio_button_window.h"
 #include "dialog_message_window.h"
 static Window *s_main_window;
@@ -54,8 +52,10 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
   if(cell_index->row == RADIO_BUTTON_WINDOW_NUM_ROWS) {
     // Do something with user choice
     APP_LOG(APP_LOG_LEVEL_INFO, "Submitted choice %d", s_current_selection);
-   // window_stack_pop(true);
-		dialog_message_window_push();
+  
+		scenario(0,'q');
+		// window_stack_pop(true);
+	//dialog_message_window_push();
   } else {
     // Change selection
     s_current_selection = cell_index->row;
