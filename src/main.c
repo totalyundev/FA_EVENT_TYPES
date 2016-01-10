@@ -1,3 +1,10 @@
+/*
+gr8 ideas:
+-multiclick+longclick as a method to get to hidden option secured by PIN, which wipe out the data
+
+
+*/
+
 #include <pebble.h>
 #include "radio_button_window.h"
 #include "Lickert_scale_window.h"
@@ -6,10 +13,12 @@
 #include "main.h"
 #include "yes_no_window.h"
 #include "save_routine.h"
+#include "first_launch.h"
 
 #define MENU_CELL_HEIGHT 28
 
 #define NUM_WINDOWS 6
+bool first_run = false;
 bool first_chain = false;
 int8_t first_chain_counter = 0;
 
@@ -81,10 +90,6 @@ void scenario(int index, char choice) {
   
 		
 	}
-	  
-    
-    
-    
 }
 
 static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
@@ -176,12 +181,19 @@ static void window_unload(Window *window) {
 }
 
 static void init() {
+	bool save_data;
+		save_data=persist_read_bool(PK_FIRST_LAUNCH);
   s_main_window = window_create();
   window_set_window_handlers(s_main_window, (WindowHandlers) {
       .load = window_load,
       .unload = window_unload,
   });
   window_stack_push(s_main_window, true);
+	if(save_data==false){
+		
+		show_first_launch();	
+	}
+	
 }
 
 static void deinit() {

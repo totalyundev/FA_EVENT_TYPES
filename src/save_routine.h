@@ -1,9 +1,10 @@
 #pragma once
-
-#define PK_ZERO_TIME 0
-#define PK_RADIO_BUTTON 1
-#define PK_CHECKBOX 2
-#define PK_LICKERT_SCALE 3
+#include <pebble.h>
+#define PK_FIRST_LAUNCH 0
+#define PK_ZERO_TIME x
+#define PK_RADIO_BUTTON xx
+#define PK_CHECKBOX xxx
+#define PK_LICKERT_SCALE xxxx
 
 
 #define PK_COUNTER XXX
