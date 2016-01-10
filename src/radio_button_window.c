@@ -2,10 +2,50 @@
 #include "main.h"
 #include "radio_button_window.h"
 #include "dialog_message_window.h"
+#define ID_STARTING 0
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
+static TextLayer *s_list_message_layer;
+static Layer *primitives_layer;
 
 static int s_current_selection = 0;
+
+static char* subtitles[] = {
+	"first one",
+	"second",
+	"third",
+	"fourth",
+	"SUBMIT"
+		
+};
+
+static void canvas_update_proc(Layer *this_layer, GContext *ctx) {
+    
+    graphics_draw_rect(ctx, GRect(1, 1, 142, 28));
+}
+
+static void update_text(int index) {
+	static char s_puff[24];
+		snprintf(s_puff, sizeof(s_puff), subtitles[index]);
+	text_layer_set_text(s_list_message_layer, s_puff);
+	
+} 
+
+static void back_click_handler(ClickRecognizerRef recognizer, void *context) {
+	//do nothing
+	return;
+}
+
+static void click_config_provider(void *context) {
+
+		window_single_click_subscribe(BUTTON_ID_BACK, back_click_handler);
+}
+
+static void get_selected_index(MenuLayer *menu_layer, MenuIndex *new_index, MenuIndex old_index, void *context){
+	update_text(new_index->row);
+	APP_LOG(APP_LOG_LEVEL_INFO, "CHUJ W DUPIE");
+
+} 
 
 static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
   return RADIO_BUTTON_WINDOW_NUM_ROWS + 1;
@@ -67,15 +107,33 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  s_menu_layer = menu_layer_create(bounds);
+	//txt layer for subtitle box
+	s_list_message_layer = text_layer_create(GRect(5,0,140,28));
+	text_layer_set_font(s_list_message_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+  text_layer_set_text_alignment(s_list_message_layer, GTextAlignmentLeft);
+  layer_add_child(window_layer, text_layer_get_layer(s_list_message_layer));
+	update_text(ID_STARTING);
+	
+	
+  s_menu_layer = menu_layer_create(GRect(0, 30, 144, 150));
   menu_layer_set_click_config_onto_window(s_menu_layer, window);
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks) {
       .get_num_rows = get_num_rows_callback,
       .draw_row = draw_row_callback,
       .get_cell_height = get_cell_height_callback,
       .select_click = select_callback,
+			.selection_will_change = get_selected_index,
+
   });
+ 	menu_layer_set_selected_index(s_menu_layer, MenuIndex(0,ID_STARTING), MenuRowAlignNone, true);
+
   layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
+
+		//to display frame
+    primitives_layer = layer_create(bounds);
+    layer_set_update_proc(primitives_layer, canvas_update_proc);
+    layer_add_child(window_layer, primitives_layer);
+
 }
 
 static void window_unload(Window *window) {
@@ -93,5 +151,6 @@ void radio_button_window_push() {
         .unload = window_unload,
     });
   }
+	window_set_click_config_provider(s_main_window, (ClickConfigProvider)click_config_provider);
   window_stack_push(s_main_window, true);
 }
