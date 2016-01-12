@@ -2,6 +2,7 @@
 #include "main.h"
 #include "radio_button_window.h"
 #include "dialog_message_window.h"
+#include "save_routine.h"
 #define ID_STARTING 0
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
@@ -9,7 +10,7 @@ static TextLayer *s_list_message_layer;
 static Layer *primitives_layer;
 
 static int s_current_selection = 0;
-
+static char menu_lvl;
 static char* subtitles[] = {
 	"first one",
 	"second",
@@ -43,7 +44,7 @@ static void click_config_provider(void *context) {
 
 static void get_selected_index(MenuLayer *menu_layer, MenuIndex *new_index, MenuIndex old_index, void *context){
 	update_text(new_index->row);
-	APP_LOG(APP_LOG_LEVEL_INFO, "CHUJ W DUPIE");
+	//APP_LOG(APP_LOG_LEVEL_INFO, "index changed.");
 
 } 
 
@@ -92,8 +93,12 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
   if(cell_index->row == RADIO_BUTTON_WINDOW_NUM_ROWS) {
     // Do something with user choice
     APP_LOG(APP_LOG_LEVEL_INFO, "Submitted choice %d", s_current_selection);
-  
+ 
+		
+		radio_button_save_data(s_current_selection, menu_lvl);
+		
 		scenario(0,'q');
+		
 		// window_stack_pop(true);
 	//dialog_message_window_push();
   } else {
@@ -143,8 +148,9 @@ static void window_unload(Window *window) {
   s_main_window = NULL;
 }
 
-void radio_button_window_push() {
-  if(!s_main_window) {
+void radio_button_window_push(char choice) {
+  menu_lvl=choice;
+	if(!s_main_window) {
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers) {
         .load = window_load,

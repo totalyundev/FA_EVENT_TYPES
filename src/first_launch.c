@@ -9,10 +9,39 @@ static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
 
+static int s_uptime=0;
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+	s_uptime++;
+ if(s_uptime==1) {
+	 
+	 text_layer_set_text(s_textlayer_1, "OK. Restart.");
+	   text_layer_set_text(s_textlayer_2, ".");
+	  text_layer_set_text(s_textlayer_3, ".");
+
+ }
+	//	hide_stopwatch();
+	if (s_uptime==3){
+		//window_stack_pop_all(true);
+		//disp main menu
+		//show_first_menu();
+		window_stack_pop_all( true);
+		// tick_timer_service_unsubscribe();
+	}
+	
+}
+
+static void start_data_collect(void){
+	tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
+	
+	
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	   APP_LOG(APP_LOG_LEVEL_INFO, "Rozpocznij badanie");
 persist_write_bool(PK_FIRST_LAUNCH, true);
-	hide_first_launch();
+		//window_stack_pop_all(true);
+initial_save();
+	start_data_collect();
 
 	//never ever show this window, start saving data
 	

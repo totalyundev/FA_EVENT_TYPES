@@ -2,12 +2,13 @@
 #include "Lickert_scale_window.h"
 #include "dialog_message_window.h"
 #include "main.h"
+#include "save_routine.h"
 
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static TextLayer *s_list_message_layer, *s_question_layer;
 static Layer *primitives_layer;
-
+static char menu_lvl;
 static int highlight_element=2;
 
 static char* s_title[] = {
@@ -32,7 +33,8 @@ static void canvas_update_proc(Layer *this_layer, GContext *ctx) {
 	graphics_draw_line(ctx, GPoint(125,0), GPoint(125,128));
 }
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-	   scenario(0,'q');		
+	lickert_save_data(highlight_element, menu_lvl);   
+	scenario(0,'q');		
 	//dialog_message_window_push();
 	return;
 }
@@ -127,8 +129,10 @@ static void window_unload(Window *window) {
   s_main_window = NULL;
 }
 
-void likert_scale_window_push() {
-  if(!s_main_window) {
+void likert_scale_window_push(char choice) {
+   menu_lvl=choice;
+
+	if(!s_main_window) {
     s_main_window = window_create();
     window_set_window_handlers(s_main_window, (WindowHandlers) {
         .load = window_load,

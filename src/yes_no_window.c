@@ -1,19 +1,24 @@
 #include <pebble.h>
 #include "yes_no_window.h"
 #include "main.h"
+#include "save_routine.h"
 static Window *s_main_window;
 static TextLayer *s_label_layer;
 static ActionBarLayer *s_action_bar_layer;
-
+static char menu_lvl;
 static GBitmap *s_tick_bitmap, *s_cross_bitmap;
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-	   scenario(0,'q');
+	yes_no_save_data(true, menu_lvl);
+	scenario(0,'q');
+	
 	//dialog_message_window_push();
 APP_LOG(APP_LOG_LEVEL_INFO, "up");
 }
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-   scenario(0,'q');
+  
+		yes_no_save_data(false, menu_lvl);
+	scenario(0,'q');
 	//dialog_message_window_push();
 	APP_LOG(APP_LOG_LEVEL_INFO, "missing chromosome");
 }
@@ -64,8 +69,8 @@ static void window_unload(Window *window) {
   s_main_window = NULL;
 }
 
-void show_yes_no_window(){
-	
+void show_yes_no_window(char choice){
+	menu_lvl=choice;
 	if(!s_main_window) {
     s_main_window = window_create();
     window_set_background_color(s_main_window, GColorWhite);

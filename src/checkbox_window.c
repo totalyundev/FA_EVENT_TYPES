@@ -1,13 +1,16 @@
 #include <pebble.h>
 #include "checkbox_window.h"
 #include "dialog_message_window.h"
-
+#include "save_routine.h"
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 static Layer *primitives_layer;
 static TextLayer *s_list_message_layer;
 static GBitmap *s_tick_black_bitmap, *s_tick_white_bitmap, *s_shade_bitmap;
+
+static char menu_lvl;
 static bool s_selections[CHECKBOX_WINDOW_NUM_ROWS];
+
 static bool s_shade_selections[CHECKBOX_WINDOW_NUM_ROWS-1];
 static bool none_of_above = false;
 static int highlight_element=2;
@@ -17,6 +20,7 @@ static char* titles[]={"1",
 											 "3",
 											 "4",
 											 "Żaden z pow"};
+											 
 static char* subtitles[] = {
 	"first one",
 	"second",
@@ -35,7 +39,7 @@ static void update_text(int index) {
 
 static void get_selected_index(MenuLayer *menu_layer, MenuIndex *new_index, MenuIndex old_index, void *context){
 	update_text(new_index->row);
-	APP_LOG(APP_LOG_LEVEL_INFO, "CHUJ W DUPIE");
+	APP_LOG(APP_LOG_LEVEL_INFO, "selection changed.");
 
 } 
 
@@ -116,9 +120,12 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
         if(s_selections[0]==true||s_selections[1]==true||s_selections[2]==true||s_selections[3]==true||s_selections[4]==true) {
 			// Do something with choices made
 			//add statement checking if anything was chosen
+					/*
         for(int i = 0; i < CHECKBOX_WINDOW_NUM_ROWS; i++) {
             APP_LOG(APP_LOG_LEVEL_INFO, "Option %d was %s", i, (s_selections[i] ? "selected" : "not selected"));
         }
+				*/	
+				checkbox_save_data(s_selections,menu_lvl);
         dialog_message_window_push();
         // window_stack_pop(true);
         } 
@@ -131,7 +138,7 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
         // Check/uncheck
         int row = cell_index->row;
         if(row == CHECKBOX_WINDOW_NUM_ROWS-1){ //NONE OF ABOVE CLICKED
-            APP_LOG(APP_LOG_LEVEL_INFO, "NONE OF ABOVE");
+           // APP_LOG(APP_LOG_LEVEL_INFO, "NONE OF ABOVE");
             none_of_above = !none_of_above;
 					
 						if(none_of_above){
@@ -150,7 +157,7 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
                
 							s_shade_selections[i]=!s_shade_selections[i];
             }
-            APP_LOG(APP_LOG_LEVEL_INFO, "clicked: %d", row);
+            //APP_LOG(APP_LOG_LEVEL_INFO, "clicked: %d", row);
         }
             
             
@@ -209,8 +216,9 @@ static void window_unload(Window *window) {
 	}
 }
 
-void checkbox_window_push() {
-    if(!s_main_window) {
+void checkbox_window_push(char choice) {
+  menu_lvl=choice;
+	if(!s_main_window) {
         s_main_window = window_create();
         window_set_window_handlers(s_main_window, (WindowHandlers) {
             .load = window_load,

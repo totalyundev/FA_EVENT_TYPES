@@ -18,6 +18,8 @@ gr8 ideas:
 #define MENU_CELL_HEIGHT 28
 
 #define NUM_WINDOWS 6
+bool save_data;
+bool skip_save;
 bool first_run = false;
 bool first_chain = false;
 int8_t first_chain_counter = 0;
@@ -32,19 +34,19 @@ void scenario(int index, char choice) {
 		switch(first_chain_counter){
 						
             case 1:
-            radio_button_window_push();
+            radio_button_window_push('b');
 						first_chain_counter++;
             break;
             case 2:
-            checkbox_window_push();
+            checkbox_window_push('b');
       			first_chain_counter++;      
 						break;
             case 3:
-            likert_scale_window_push();
+            likert_scale_window_push('b');
       			first_chain_counter++;      
 						break;
             case 4:
-						dialog_message_window_push();
+						dialog_message_window_push('b');
 						break;
            
 			
@@ -58,28 +60,29 @@ void scenario(int index, char choice) {
         //main menu
         case 'a':
         switch (index) {
+           
             case 0:
-            dialog_message_window_push();
+            radio_button_window_push('a');
             break;
             case 1:
-            radio_button_window_push();
+            checkbox_window_push('a');
             break;
             case 2:
-            checkbox_window_push();
+            likert_scale_window_push('a');
             break;
             case 3:
-            likert_scale_window_push();
-            break;
-            case 4:
-						show_yes_no_window();
+						show_yes_no_window('a');
 						break;
-            case 5:
+            case 4:
             first_chain = true;
 											first_chain_counter++;
 
-						show_yes_no_window();
+						show_yes_no_window('a');
             break;        
-        }
+         		case 5:
+            dialog_message_window_push();
+            break;
+				}
 			break;
 			case'q':
 			default:
@@ -98,23 +101,24 @@ static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_in
 
 static void draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
+  
     case 0:
-      menu_cell_basic_draw(ctx, cell_layer, "Save", NULL, save_icon);
-      break;
-    case 1:
       menu_cell_basic_draw(ctx, cell_layer, "Radio button", NULL, NULL);
       break;
-    case 2:
+    case 1:
       menu_cell_basic_draw(ctx, cell_layer, "Checkbox", NULL, NULL);
       break;
-    case 3:
+    case 2:
       menu_cell_basic_draw(ctx, cell_layer, "Likert", NULL, NULL);
       break;
-    case 4:
+    case 3:
       menu_cell_basic_draw(ctx, cell_layer, "Yes/No", NULL, NULL);
       break;
-    case 5:
+    case 4:
       menu_cell_basic_draw(ctx, cell_layer, "Chain example", NULL, NULL);
+      break;
+		  case 5:
+      menu_cell_basic_draw(ctx, cell_layer, "Exit", NULL, save_icon);
       break;
    
     default:
@@ -181,7 +185,7 @@ static void window_unload(Window *window) {
 }
 
 static void init() {
-	bool save_data;
+	
 		save_data=persist_read_bool(PK_FIRST_LAUNCH);
   s_main_window = window_create();
   window_set_window_handlers(s_main_window, (WindowHandlers) {
@@ -191,13 +195,23 @@ static void init() {
   window_stack_push(s_main_window, true);
 	if(save_data==false){
 		
-		show_first_launch();	
+		show_first_launch();
+		skip_save=true;
 	}
-	
+	else {
+		read_persist_data();
+		
+	}
 }
 
 static void deinit() {
-  window_destroy(s_main_window);
+	
+	if(skip_save==!true){
+	save_persist_data();
+	
+		
+	}
+	  window_destroy(s_main_window);
 }
 
 int main() {

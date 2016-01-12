@@ -10,4 +10,4 @@
 */
 #define LIST_MESSAGE_WINDOW_HINT_TEXT   "Likert scale txt"
 
-void likert_scale_window_push();
+void likert_scale_window_push(char choice);
